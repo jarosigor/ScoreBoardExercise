@@ -43,6 +43,7 @@ class ScoreboardServiceTest {
         @DisplayName("Start match with registered teams")
         void validStartNewMatch() {
             scoreboardService.startNewMatch(TEAM_A, TEAM_B);
+            assertTrue(scoreboardService.getScoreboard().getMatches().getFirst().getInProgress());
             assertEquals(1, scoreboardService.getScoreboard().getMatches().size());
         }
 
@@ -168,6 +169,7 @@ class ScoreboardServiceTest {
             scoreboardService.finishMatch(match);
             assertNotNull(match.getEndTime());
             assertFalse(match.getInProgress());
+            assertTrue(scoreboardService.getScoreboard().getMatches().isEmpty());
         }
 
         @Test
