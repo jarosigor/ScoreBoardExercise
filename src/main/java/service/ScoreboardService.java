@@ -1,11 +1,17 @@
 package service;
 
+import lombok.Getter;
 import model.Match;
 import model.Scoreboard;
 
+@Getter
 public class ScoreboardService {
 
-    private final Scoreboard scoreboard = new Scoreboard();
+    private final Scoreboard scoreboard;
+
+    public ScoreboardService() {
+        scoreboard = new Scoreboard();
+    }
 
     public void startNewMatch(String homeTeamName, String awayTeamName) {
     }
@@ -16,7 +22,8 @@ public class ScoreboardService {
     public void finishMatch(Match match) {
     }
 
-    public void getSummary() {
+    public String getSummary() {
+        return null;
     }
 
 }
