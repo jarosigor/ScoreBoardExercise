@@ -30,7 +30,7 @@ public class ScoreBoardValidationService {
         if (match == null) {
             throw ErrorMessages.reportNullArgument();
         }
-        if (areValuesNonNull(match.getHomeTeam().getName(), match.getAwayTeam().getName())) {
+        if (!areValuesNonNull(match.getHomeTeam().getName(), match.getAwayTeam().getName())) {
             throw ErrorMessages.reportNullArgument();
         }
         if (match.getEndTime() != null) {
