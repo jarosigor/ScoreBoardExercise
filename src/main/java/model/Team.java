@@ -24,7 +24,7 @@ public class Team {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Team team = (Team) o;
-        return Objects.equals(getName(), team.getName());
+        return getName().equalsIgnoreCase(team.getName());
     }
 
     @Override
