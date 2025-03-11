@@ -1,15 +1,16 @@
 package model;
 
 import java.util.Date;
-import java.util.UUID;
+import java.util.Objects;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@RequiredArgsConstructor
 public class Match {
 
-    private final UUID uuid;
     private final Team homeTeam;
     private final Team awayTeam;
     private Date startTime;
@@ -17,14 +18,20 @@ public class Match {
     private Score score;
     private Boolean inProgress;
 
-    public Match(Team homeTeam, Team awayTeam) {
-        this.uuid = UUID.randomUUID();
-        this.homeTeam = homeTeam;
-        this.awayTeam = awayTeam;
-    }
-
     @Override
     public String toString() {
         return homeTeam.getName() + " " + score.getHomeTeamScore() + " - " + awayTeam.getName() + " " + score.getAwayTeamScore();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Match match = (Match) o;
+        return Objects.equals(getHomeTeam(), match.getHomeTeam()) && Objects.equals(getAwayTeam(), match.getAwayTeam());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getHomeTeam(), getAwayTeam());
     }
 }
