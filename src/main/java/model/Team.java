@@ -1,5 +1,6 @@
 package model;
 
+import java.util.Objects;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,5 +21,17 @@ public class Team {
         this.wins = 0;
         this.draws = 0;
         this.losses = 0;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Team team = (Team) o;
+        return Objects.equals(getName(), team.getName());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getUuid(), getName());
     }
 }
