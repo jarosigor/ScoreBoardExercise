@@ -15,8 +15,16 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+// TODO add tests for updateScore and finishMatch when match is not in the scoreboard
 @DisplayName("Scoreboard Service test ::")
 class ScoreboardServiceTest {
+
+    private final String TEAM_A = "Team A";
+    private final String TEAM_B = "Team B";
+    private final String TEAM_C = "Team C";
+    private final String TEAM_D = "Team D";
+    private final String TEAM_E = "Team E";
+    private final String TEAM_F = "Team F";
 
     private ScoreboardService scoreboardService;
 
@@ -27,56 +35,60 @@ class ScoreboardServiceTest {
         @BeforeEach
         public void setUp() {
             scoreboardService = new ScoreboardService();
-            var teams = List.of(new Team("Team A"), new Team("Team B"), new Team("Team C"));
+            var teams = List.of(new Team(TEAM_A), new Team(TEAM_B), new Team(TEAM_C));
+            var matches = List.of(new Match(new Team(TEAM_A), new Team(TEAM_B)),
+                    new Match(new Team(TEAM_C), new Team(TEAM_D)));
             scoreboardService.getScoreboard().getTeams().addAll(teams);
+            scoreboardService.getScoreboard().getMatches().addAll(matches);
         }
 
         @Test
         @DisplayName("Start match with registered teams")
         void validStartNewMatch() {
-            scoreboardService.startNewMatch("Team A", "Team B");
+            scoreboardService.startNewMatch(TEAM_A, TEAM_B);
             assertEquals(1, scoreboardService.getScoreboard().getMatches().size());
         }
 
         @Test
         @DisplayName("Start match with non-registered teams")
         void notRegisteredTeams() {
-            scoreboardService.startNewMatch("Team D", "Team E");
+            scoreboardService.startNewMatch(TEAM_D, TEAM_E);
             assertEquals(0, scoreboardService.getScoreboard().getMatches().size());
         }
 
         @Test
         @DisplayName("Start match with same teams")
         void sameTeams() {
-            scoreboardService.startNewMatch("Team A", "Team A");
-            assertEquals(0, scoreboardService.getScoreboard().getMatches().size());
+            assertThrows(IllegalStateException.class, () -> {
+                scoreboardService.startNewMatch(TEAM_A, TEAM_A);
+            });
         }
 
         @Test
         @DisplayName("Start match with null team names")
         void nullTeamNames() {
             assertThrows(IllegalArgumentException.class, () -> {
-                scoreboardService.startNewMatch(null, "Team B");
+                scoreboardService.startNewMatch(null, TEAM_B);
             });
             assertThrows(IllegalArgumentException.class, () -> {
-                scoreboardService.startNewMatch("Team A", null);
+                scoreboardService.startNewMatch(TEAM_A, null);
             });
         }
 
         @Test
         @DisplayName("Start match with empty team names")
         void emptyTeamNames() {
-            scoreboardService.startNewMatch("", "Team B");
+            scoreboardService.startNewMatch("", TEAM_B);
             assertEquals(0, scoreboardService.getScoreboard().getMatches().size());
-            scoreboardService.startNewMatch("Team A", "");
+            scoreboardService.startNewMatch(TEAM_A, "");
             assertEquals(0, scoreboardService.getScoreboard().getMatches().size());
         }
 
         @Test
         @DisplayName("Start match when match is already in progress")
         void matchAlreadyInProgress() {
-            scoreboardService.startNewMatch("Team A", "Team B");
-            scoreboardService.startNewMatch("Team A", "Team B");
+            scoreboardService.startNewMatch(TEAM_A, TEAM_B);
+            scoreboardService.startNewMatch(TEAM_A, TEAM_B);
             assertEquals(1, scoreboardService.getScoreboard().getMatches().size());
         }
     }
@@ -88,9 +100,9 @@ class ScoreboardServiceTest {
         @BeforeEach
         public void setUp() {
             scoreboardService = new ScoreboardService();
-            var teams = List.of(new Team("Team A"), new Team("Team B"));
+            var teams = List.of(new Team(TEAM_A), new Team(TEAM_B));
             scoreboardService.getScoreboard().getTeams().addAll(teams);
-            scoreboardService.startNewMatch("Team A", "Team B");
+            scoreboardService.startNewMatch(TEAM_A, TEAM_B);
         }
 
         @Test
@@ -152,9 +164,9 @@ class ScoreboardServiceTest {
         @BeforeEach
         public void setUp() {
             scoreboardService = new ScoreboardService();
-            var teams = List.of(new Team("Team A"), new Team("Team B"));
+            var teams = List.of(new Team(TEAM_A), new Team(TEAM_B));
             scoreboardService.getScoreboard().getTeams().addAll(teams);
-            scoreboardService.startNewMatch("Team A", "Team B");
+            scoreboardService.startNewMatch(TEAM_A, TEAM_B);
         }
 
         @Test
@@ -193,9 +205,9 @@ class ScoreboardServiceTest {
         @BeforeEach
         public void setUp() {
             scoreboardService = new ScoreboardService();
-            var teams = List.of(new Team("Team A"), new Team("Team B"),
-                    new Team("Team C"), new Team("Team D"), new Team("Team E"),
-                    new Team("Team F"));
+            var teams = List.of(new Team(TEAM_A), new Team(TEAM_B),
+                    new Team(TEAM_C), new Team(TEAM_D), new Team(TEAM_E),
+                    new Team(TEAM_F));
             scoreboardService.getScoreboard().getTeams().addAll(teams);
         }
 
@@ -209,18 +221,18 @@ class ScoreboardServiceTest {
         @Test
         @DisplayName("Get summary with a single match in progress")
         void singleMatchInProgress() {
-            scoreboardService.startNewMatch("Team A", "Team B");
+            scoreboardService.startNewMatch(TEAM_A, TEAM_B);
             String summary = scoreboardService.getSummary();
-            assertTrue(summary.contains("Team A"));
-            assertTrue(summary.contains("Team B"));
+            assertTrue(summary.contains(TEAM_A));
+            assertTrue(summary.contains(TEAM_B));
         }
 
         @Test
         @DisplayName("Get summary with multiple matches with different scores")
         void multipleMatchesDifferentScores() {
-            scoreboardService.startNewMatch("Team A", "Team B");
-            scoreboardService.startNewMatch("Team C", "Team D");
-            scoreboardService.startNewMatch("Team E", "Team F");
+            scoreboardService.startNewMatch(TEAM_A, TEAM_B);
+            scoreboardService.startNewMatch(TEAM_C, TEAM_D);
+            scoreboardService.startNewMatch(TEAM_E, TEAM_F);
             Match match1 = scoreboardService.getScoreboard().getMatches().get(0);
             Match match2 = scoreboardService.getScoreboard().getMatches().get(1);
             Match match3 = scoreboardService.getScoreboard().getMatches().get(2);
@@ -229,16 +241,16 @@ class ScoreboardServiceTest {
             scoreboardService.updateScore(match3, 1, 2);
 
             String summary = scoreboardService.getSummary();
-            assertTrue(summary.indexOf("Team C") < summary.indexOf("Team E"));
-            assertTrue(summary.indexOf("Team E") < summary.indexOf("Team A"));
+            assertTrue(summary.indexOf(TEAM_C) < summary.indexOf(TEAM_E));
+            assertTrue(summary.indexOf(TEAM_E) < summary.indexOf(TEAM_A));
         }
 
         @Test
         @DisplayName("Get summary with multiple matches where some have the same score")
         void multipleMatchesSomeWithSameScore() {
-            scoreboardService.startNewMatch("Team A", "Team B");
-            scoreboardService.startNewMatch("Team C", "Team D");
-            scoreboardService.startNewMatch("Team E", "Team F");
+            scoreboardService.startNewMatch(TEAM_A, TEAM_B);
+            scoreboardService.startNewMatch(TEAM_C, TEAM_D);
+            scoreboardService.startNewMatch(TEAM_E, TEAM_F);
             Match match1 = scoreboardService.getScoreboard().getMatches().get(0);
             Match match2 = scoreboardService.getScoreboard().getMatches().get(1);
             Match match3 = scoreboardService.getScoreboard().getMatches().get(2);
@@ -247,8 +259,8 @@ class ScoreboardServiceTest {
             scoreboardService.updateScore(match3, 4, 0);
 
             String summary = scoreboardService.getSummary();
-            assertTrue(summary.indexOf("Team E") < summary.indexOf("Team A"));
-            assertTrue(summary.indexOf("Team A") < summary.indexOf("Team C"));
+            assertTrue(summary.indexOf(TEAM_E) < summary.indexOf(TEAM_A));
+            assertTrue(summary.indexOf(TEAM_A) < summary.indexOf(TEAM_C));
         }
     }
 

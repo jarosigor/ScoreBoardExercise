@@ -8,7 +8,6 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@RequiredArgsConstructor
 public class Match {
 
     private final Team homeTeam;
@@ -17,6 +16,13 @@ public class Match {
     private Date endTime;
     private Score score;
     private Boolean inProgress;
+
+    public Match(Team homeTeam, Team awayTeam) {
+        this.homeTeam = homeTeam;
+        this.awayTeam = awayTeam;
+        this.score = new Score(0, 0);
+        this.inProgress = false;
+    }
 
     @Override
     public String toString() {
