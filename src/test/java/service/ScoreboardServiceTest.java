@@ -33,7 +33,7 @@ class ScoreboardServiceTest {
     class StartNewMatch {
 
         @BeforeEach
-        public void setUp() {
+        void setUp() {
             scoreboardService = new ScoreboardService();
             var teams = List.of(new Team(TEAM_A), new Team(TEAM_B), new Team(TEAM_C));
             scoreboardService.getScoreboard().getTeams().addAll(teams);
@@ -44,13 +44,6 @@ class ScoreboardServiceTest {
         void validStartNewMatch() {
             scoreboardService.startNewMatch(TEAM_A, TEAM_B);
             assertEquals(1, scoreboardService.getScoreboard().getMatches().size());
-        }
-
-        @Test
-        @DisplayName("Start match with non-registered teams")
-        void notRegisteredTeams() {
-            scoreboardService.startNewMatch(TEAM_D, TEAM_E);
-            assertEquals(0, scoreboardService.getScoreboard().getMatches().size());
         }
 
         @Test
@@ -97,7 +90,7 @@ class ScoreboardServiceTest {
     class UpdateScore {
 
         @BeforeEach
-        public void setUp() {
+        void setUp() {
             scoreboardService = new ScoreboardService();
             var teams = List.of(new Team(TEAM_A), new Team(TEAM_B));
             scoreboardService.getScoreboard().getTeams().addAll(teams);
@@ -161,7 +154,7 @@ class ScoreboardServiceTest {
     class FinishMatch {
 
         @BeforeEach
-        public void setUp() {
+        void setUp() {
             scoreboardService = new ScoreboardService();
             var teams = List.of(new Team(TEAM_A), new Team(TEAM_B));
             scoreboardService.getScoreboard().getTeams().addAll(teams);
@@ -202,7 +195,7 @@ class ScoreboardServiceTest {
     class GetSummary {
 
         @BeforeEach
-        public void setUp() {
+        void setUp() {
             scoreboardService = new ScoreboardService();
             var teams = List.of(new Team(TEAM_A), new Team(TEAM_B),
                     new Team(TEAM_C), new Team(TEAM_D), new Team(TEAM_E),

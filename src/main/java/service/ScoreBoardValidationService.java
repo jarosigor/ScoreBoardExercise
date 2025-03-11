@@ -12,10 +12,10 @@ import model.Team;
 public class ScoreBoardValidationService {
 
     void checkScoreUpdate(Match match, Integer homeTeamScore, Integer awayTeamScore) {
-        if (areValuesNonNull(match, homeTeamScore, awayTeamScore)) {
+        if (areValuesNull(match, homeTeamScore, awayTeamScore)) {
             throw ErrorMessages.reportNullArgument();
         }
-        if (areValuesPositive(homeTeamScore, awayTeamScore)) {
+        if (areValuesNegative(homeTeamScore, awayTeamScore)) {
             throw ErrorMessages.reportNegativeArgument();
         }
         if (match.getEndTime() != null) {
@@ -30,7 +30,7 @@ public class ScoreBoardValidationService {
         if (match == null) {
             throw ErrorMessages.reportNullArgument();
         }
-        if (!areValuesNonNull(match.getHomeTeam().getName(), match.getAwayTeam().getName())) {
+        if (areValuesNull(match.getHomeTeam().getName(), match.getAwayTeam().getName())) {
             throw ErrorMessages.reportNullArgument();
         }
         if (match.getEndTime() != null) {
@@ -55,12 +55,12 @@ public class ScoreBoardValidationService {
         return scoreboard.getTeams().contains(new Team(teamName));
     }
 
-    private boolean areValuesNonNull(Object... values) {
-        return Arrays.stream(values).allMatch(Objects::nonNull);
+    private boolean areValuesNull(Object... values) {
+        return !Arrays.stream(values).allMatch(Objects::nonNull);
     }
 
-    private boolean areValuesPositive(Integer... values) {
-        return Arrays.stream(values).allMatch(value -> value >= 0);
+    private boolean areValuesNegative(Integer... values) {
+        return Arrays.stream(values).anyMatch(value -> value < 0);
     }
 
     private boolean areStringsNonEmpty(String... strings) {
