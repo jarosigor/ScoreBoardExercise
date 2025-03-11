@@ -18,7 +18,7 @@ public class ErrorMessages {
     }
 
     public static IllegalStateException reportNonValidTeamName() {
-        return new IllegalStateException("Team name cannot be null, empty or equal to each other");
+        return new IllegalStateException("Team name cannot be empty or equal to each other");
     }
 
     public static IllegalStateException reportMatchNotInProgress() {

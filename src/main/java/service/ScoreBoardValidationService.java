@@ -36,7 +36,7 @@ public class ScoreBoardValidationService {
         if (match.getEndTime() != null) {
             throw ErrorMessages.reportFinishedMatch();
         }
-        if (areTeamsEqual(match)) {
+        if (areTeamsEqual(match) || !areStringsNonEmpty(match.getHomeTeam().getName(), match.getAwayTeam().getName())) {
             throw ErrorMessages.reportNonValidTeamName();
         }
     }
@@ -61,6 +61,10 @@ public class ScoreBoardValidationService {
 
     private boolean areValuesPositive(Integer... values) {
         return Arrays.stream(values).allMatch(value -> value >= 0);
+    }
+
+    private boolean areStringsNonEmpty(String... strings) {
+        return Arrays.stream(strings).noneMatch(String::isEmpty);
     }
 
     private boolean areTeamsEqual(Match match) {

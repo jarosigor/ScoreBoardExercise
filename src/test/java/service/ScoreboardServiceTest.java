@@ -36,10 +36,7 @@ class ScoreboardServiceTest {
         public void setUp() {
             scoreboardService = new ScoreboardService();
             var teams = List.of(new Team(TEAM_A), new Team(TEAM_B), new Team(TEAM_C));
-            var matches = List.of(new Match(new Team(TEAM_A), new Team(TEAM_B)),
-                    new Match(new Team(TEAM_C), new Team(TEAM_D)));
             scoreboardService.getScoreboard().getTeams().addAll(teams);
-            scoreboardService.getScoreboard().getMatches().addAll(matches);
         }
 
         @Test
@@ -78,10 +75,12 @@ class ScoreboardServiceTest {
         @Test
         @DisplayName("Start match with empty team names")
         void emptyTeamNames() {
-            scoreboardService.startNewMatch("", TEAM_B);
-            assertEquals(0, scoreboardService.getScoreboard().getMatches().size());
-            scoreboardService.startNewMatch(TEAM_A, "");
-            assertEquals(0, scoreboardService.getScoreboard().getMatches().size());
+            assertThrows(IllegalStateException.class, () -> {
+                scoreboardService.startNewMatch("", TEAM_B);
+            });
+            assertThrows(IllegalStateException.class, () -> {
+                scoreboardService.startNewMatch(TEAM_A, "");
+            });
         }
 
         @Test
