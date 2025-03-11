@@ -21,4 +21,11 @@ public class ErrorMessages {
         return new IllegalStateException("Team name cannot be null, empty or equal to each other");
     }
 
+    public static IllegalStateException reportMatchNotInProgress() {
+        return new IllegalStateException("Match is not in progress");
+    }
+
+    public static IllegalStateException reportMatchNotInScoreboard() {
+        return new IllegalStateException("Match is not in scoreboard");
+    }
 }
