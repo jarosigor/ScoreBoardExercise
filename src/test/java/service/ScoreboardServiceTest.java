@@ -149,6 +149,15 @@ class ScoreboardServiceTest {
                 scoreboardService.updateScore(match, 1, null);
             });
         }
+
+        @Test
+        @DisplayName("Update score when match not in the scoreboard")
+        void matchNotInScoreboard() {
+            Match match = new Match(new Team("Not in sb"), new Team("Not in scoreboard"));
+            assertThrows(IllegalStateException.class, () -> {
+                scoreboardService.updateScore(match, 1, 0);
+            });
+        }
     }
 
     @Nested
@@ -187,6 +196,15 @@ class ScoreboardServiceTest {
             Match match = scoreboardService.getScoreboard().getMatches().getFirst();
             scoreboardService.finishMatch(match);
 
+            assertThrows(IllegalStateException.class, () -> {
+                scoreboardService.finishMatch(match);
+            });
+        }
+
+        @Test
+        @DisplayName("Finish match when match not in the scoreboard")
+        void matchNotInScoreboard() {
+            Match match = new Match(new Team("Not in scoreboard"), new Team("Not in sb"));
             assertThrows(IllegalStateException.class, () -> {
                 scoreboardService.finishMatch(match);
             });
