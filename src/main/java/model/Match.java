@@ -8,7 +8,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class Match {
+public class Match implements Comparable<Match> {
 
     private final Team homeTeam;
     private final Team awayTeam;
@@ -39,5 +39,18 @@ public class Match {
     @Override
     public int hashCode() {
         return Objects.hash(getHomeTeam(), getAwayTeam());
+    }
+
+    @Override
+    public int compareTo(Match o) {
+        var totalScore1 = this.score.getHomeTeamScore() + this.score.getAwayTeamScore();
+        var totalScore2 = o.getScore().getHomeTeamScore() + o.getScore().getAwayTeamScore();
+        if (totalScore1 < totalScore2) {
+            return 1;
+        } else if (totalScore1 > totalScore2) {
+            return -1;
+        } else {
+            return this.startTime.compareTo(o.startTime);
+        }
     }
 }

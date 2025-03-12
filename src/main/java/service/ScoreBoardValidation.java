@@ -9,7 +9,7 @@ import model.Scoreboard;
 import model.Team;
 
 @UtilityClass
-public class ScoreBoardValidationService {
+public class ScoreBoardValidation {
 
     void checkScoreUpdate(Match match, Integer homeTeamScore, Integer awayTeamScore) {
         if (areValuesNull(match, homeTeamScore, awayTeamScore)) {
