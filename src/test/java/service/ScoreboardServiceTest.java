@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-// TODO add tests for updateScore and finishMatch when match is not in the scoreboard
+
 @DisplayName("Scoreboard Service test ::")
 class ScoreboardServiceTest {
 
