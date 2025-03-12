@@ -4,6 +4,9 @@ import java.util.Objects;
 import lombok.Getter;
 import lombok.Setter;
 
+/***
+ * Model class for the Team entity
+ */
 @Getter
 @Setter
 public class Team {

@@ -5,6 +5,9 @@ import java.util.Objects;
 import lombok.Getter;
 import lombok.Setter;
 
+/***
+ * Model class for the Match entity
+ */
 @Getter
 @Setter
 public class Match implements Comparable<Match> {

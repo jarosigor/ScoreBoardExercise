@@ -5,6 +5,9 @@ import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
+/***
+ * Model class for the Scoreboard entity
+ */
 @Getter
 @Setter
 public class Scoreboard {

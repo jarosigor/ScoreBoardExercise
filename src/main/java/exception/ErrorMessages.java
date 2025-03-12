@@ -2,6 +2,9 @@ package exception;
 
 import lombok.experimental.UtilityClass;
 
+/***
+ * Utility class for error messages
+ */
 @UtilityClass
 public class ErrorMessages {
 
@@ -17,8 +20,8 @@ public class ErrorMessages {
         return new IllegalStateException("Match is already finished");
     }
 
-    public static IllegalStateException reportNonValidTeamName() {
-        return new IllegalStateException("Team name cannot be empty or equal to each other");
+    public static IllegalArgumentException reportNonValidTeamName() {
+        return new IllegalArgumentException("Team name cannot be empty or equal to each other");
     }
 
     public static IllegalStateException reportMatchNotInProgress() {

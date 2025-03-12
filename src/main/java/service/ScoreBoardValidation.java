@@ -8,6 +8,9 @@ import model.Match;
 import model.Scoreboard;
 import model.Team;
 
+/***
+ * Utility class for validating the input data and methods for the Scoreboard service
+ */
 @UtilityClass
 public class ScoreBoardValidation {
 

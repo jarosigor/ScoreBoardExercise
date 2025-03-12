@@ -7,6 +7,9 @@ import model.Match;
 import model.Scoreboard;
 import model.Team;
 
+/***
+ * Main class that implements the ScoreBoardService interface and provides the main functionality of the scoreboard.
+ */
 @Getter
 public class ScoreboardServiceImpl implements ScoreBoardService {
 
@@ -58,7 +61,7 @@ public class ScoreboardServiceImpl implements ScoreBoardService {
         return scoreboard.getMatches().stream()
                 .filter(match -> match.equals(new Match(new Team(homeTeamName), new Team(awayTeamName))))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Match not found"));
+                .orElse(null);
     }
 
     private void addNewTeams(Team homeTeam, Team awayTeam) {

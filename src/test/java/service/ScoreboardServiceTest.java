@@ -14,7 +14,9 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-
+/***
+ *  Class for testing ScoreBoardService
+ */
 @DisplayName("Scoreboard Service test ::")
 class ScoreboardServiceTest {
 
@@ -47,7 +49,7 @@ class ScoreboardServiceTest {
         @Test
         @DisplayName("Start match with same teams")
         void sameTeams() {
-            assertThrows(IllegalStateException.class, () -> {
+            assertThrows(IllegalArgumentException.class, () -> {
                 scoreboardServiceImpl.startNewMatch(TEAM_A, TEAM_A);
             });
         }
@@ -66,10 +68,10 @@ class ScoreboardServiceTest {
         @Test
         @DisplayName("Start match with empty team names")
         void emptyTeamNames() {
-            assertThrows(IllegalStateException.class, () -> {
+            assertThrows(IllegalArgumentException.class, () -> {
                 scoreboardServiceImpl.startNewMatch("", TEAM_B);
             });
-            assertThrows(IllegalStateException.class, () -> {
+            assertThrows(IllegalArgumentException.class, () -> {
                 scoreboardServiceImpl.startNewMatch(TEAM_A, "");
             });
         }
