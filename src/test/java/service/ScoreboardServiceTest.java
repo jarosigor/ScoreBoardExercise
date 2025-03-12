@@ -2,6 +2,7 @@ package service;
 
 import java.util.List;
 import model.Match;
+import model.Scoreboard;
 import model.Team;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -255,6 +256,45 @@ class ScoreboardServiceTest {
             String summary = scoreboardService.getSummary();
             assertTrue(summary.indexOf(TEAM_E) < summary.indexOf(TEAM_A));
             assertTrue(summary.indexOf(TEAM_A) < summary.indexOf(TEAM_C));
+        }
+
+        @Test
+        @DisplayName("Get summary for example provided in task")
+        void exampleFromTask() throws InterruptedException {
+            scoreboardService = new ScoreboardService();
+            setUpExampleTaskData(scoreboardService.getScoreboard());
+
+            String summary = scoreboardService.getSummary();
+            assertTrue(summary.indexOf("Argentina") < summary.indexOf("Germany"));
+            assertTrue(summary.indexOf("Mexico") < summary.indexOf("Argentina"));
+            assertTrue(summary.indexOf("Spain") < summary.indexOf("Mexico"));
+            assertTrue(summary.indexOf("Uruguay") < summary.indexOf("Spain"));
+
+        }
+
+        void setUpExampleTaskData(Scoreboard scoreboard) throws InterruptedException {
+            var teams = List.of(new Team("Mexico"), new Team("Canada"),
+                    new Team("Spain"), new Team("Brazil"), new Team("Germany"),
+                    new Team("France"), new Team("Uruguay"), new Team("Italy"),
+                    new Team("Argentina"), new Team("Australia"));
+            scoreboard.getTeams().addAll(teams);
+            scoreboardService.startNewMatch("Mexico", "Canada");
+            scoreboardService.startNewMatch("Spain", "Brazil");
+            Thread.sleep(100);
+            scoreboardService.startNewMatch("Germany", "France");
+            scoreboardService.startNewMatch("Uruguay", "Italy");
+            Thread.sleep(100);
+            scoreboardService.startNewMatch("Argentina", "Australia");
+            Match match1 = scoreboardService.getScoreboard().getMatches().get(0);
+            Match match2 = scoreboardService.getScoreboard().getMatches().get(1);
+            Match match3 = scoreboardService.getScoreboard().getMatches().get(2);
+            Match match4 = scoreboardService.getScoreboard().getMatches().get(3);
+            Match match5 = scoreboardService.getScoreboard().getMatches().get(4);
+            scoreboardService.updateScore(match1, 0, 5);
+            scoreboardService.updateScore(match2, 10, 2);
+            scoreboardService.updateScore(match3, 2, 2);
+            scoreboardService.updateScore(match4, 6, 6);
+            scoreboardService.updateScore(match5, 3, 1);
         }
     }
 

@@ -3,7 +3,6 @@ package model;
 import java.util.Date;
 import java.util.Objects;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 @Getter
@@ -50,7 +49,7 @@ public class Match implements Comparable<Match> {
         } else if (totalScore1 > totalScore2) {
             return -1;
         } else {
-            return this.startTime.compareTo(o.startTime);
+            return this.startTime.compareTo(o.startTime) * -1;
         }
     }
 }
