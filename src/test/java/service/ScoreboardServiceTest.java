@@ -1,8 +1,6 @@
 package service;
 
-import java.util.List;
 import model.Match;
-import model.Scoreboard;
 import model.Team;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -27,7 +25,7 @@ class ScoreboardServiceTest {
     private final String TEAM_E = "Team E";
     private final String TEAM_F = "Team F";
 
-    private ScoreboardService scoreboardService;
+    private ScoreboardServiceImpl scoreboardServiceImpl;
 
     @Nested
     @DisplayName("Test start match functionality")
@@ -35,24 +33,22 @@ class ScoreboardServiceTest {
 
         @BeforeEach
         void setUp() {
-            scoreboardService = new ScoreboardService();
-            var teams = List.of(new Team(TEAM_A), new Team(TEAM_B), new Team(TEAM_C));
-            scoreboardService.getScoreboard().getTeams().addAll(teams);
+            scoreboardServiceImpl = new ScoreboardServiceImpl();
         }
 
         @Test
         @DisplayName("Start match with registered teams")
         void validStartNewMatch() {
-            scoreboardService.startNewMatch(TEAM_A, TEAM_B);
-            assertTrue(scoreboardService.getScoreboard().getMatches().getFirst().getInProgress());
-            assertEquals(1, scoreboardService.getScoreboard().getMatches().size());
+            scoreboardServiceImpl.startNewMatch(TEAM_A, TEAM_B);
+            assertTrue(scoreboardServiceImpl.getScoreboard().getMatches().getFirst().getInProgress());
+            assertEquals(1, scoreboardServiceImpl.getScoreboard().getMatches().size());
         }
 
         @Test
         @DisplayName("Start match with same teams")
         void sameTeams() {
             assertThrows(IllegalStateException.class, () -> {
-                scoreboardService.startNewMatch(TEAM_A, TEAM_A);
+                scoreboardServiceImpl.startNewMatch(TEAM_A, TEAM_A);
             });
         }
 
@@ -60,10 +56,10 @@ class ScoreboardServiceTest {
         @DisplayName("Start match with null team names")
         void nullTeamNames() {
             assertThrows(IllegalArgumentException.class, () -> {
-                scoreboardService.startNewMatch(null, TEAM_B);
+                scoreboardServiceImpl.startNewMatch(null, TEAM_B);
             });
             assertThrows(IllegalArgumentException.class, () -> {
-                scoreboardService.startNewMatch(TEAM_A, null);
+                scoreboardServiceImpl.startNewMatch(TEAM_A, null);
             });
         }
 
@@ -71,19 +67,19 @@ class ScoreboardServiceTest {
         @DisplayName("Start match with empty team names")
         void emptyTeamNames() {
             assertThrows(IllegalStateException.class, () -> {
-                scoreboardService.startNewMatch("", TEAM_B);
+                scoreboardServiceImpl.startNewMatch("", TEAM_B);
             });
             assertThrows(IllegalStateException.class, () -> {
-                scoreboardService.startNewMatch(TEAM_A, "");
+                scoreboardServiceImpl.startNewMatch(TEAM_A, "");
             });
         }
 
         @Test
         @DisplayName("Start match when match is already in progress")
         void matchAlreadyInProgress() {
-            scoreboardService.startNewMatch(TEAM_A, TEAM_B);
-            scoreboardService.startNewMatch(TEAM_A, TEAM_B);
-            assertEquals(1, scoreboardService.getScoreboard().getMatches().size());
+            scoreboardServiceImpl.startNewMatch(TEAM_A, TEAM_B);
+            scoreboardServiceImpl.startNewMatch(TEAM_A, TEAM_B);
+            assertEquals(1, scoreboardServiceImpl.getScoreboard().getMatches().size());
         }
     }
 
@@ -93,17 +89,15 @@ class ScoreboardServiceTest {
 
         @BeforeEach
         void setUp() {
-            scoreboardService = new ScoreboardService();
-            var teams = List.of(new Team(TEAM_A), new Team(TEAM_B));
-            scoreboardService.getScoreboard().getTeams().addAll(teams);
-            scoreboardService.startNewMatch(TEAM_A, TEAM_B);
+            scoreboardServiceImpl = new ScoreboardServiceImpl();
+            scoreboardServiceImpl.startNewMatch(TEAM_A, TEAM_B);
         }
 
         @Test
         @DisplayName("Update score with valid match and scores")
         void validUpdateScore() {
-            Match match = scoreboardService.getScoreboard().getMatches().getFirst();
-            scoreboardService.updateScore(match, 1, 0);
+            Match match = scoreboardServiceImpl.getScoreboard().getMatches().getFirst();
+            scoreboardServiceImpl.updateScore(match, 1, 0);
             assertEquals(1, match.getScore().getHomeTeamScore());
             assertEquals(0, match.getScore().getAwayTeamScore());
         }
@@ -112,41 +106,41 @@ class ScoreboardServiceTest {
         @DisplayName("Update score with null match")
         void nullMatch() {
             assertThrows(IllegalArgumentException.class, () -> {
-                scoreboardService.updateScore(null, 1, 0);
+                scoreboardServiceImpl.updateScore(null, 1, 0);
             });
         }
 
         @Test
         @DisplayName("Update score for match not in progress")
         void matchNotInProgress() {
-            Match match = scoreboardService.getScoreboard().getMatches().getFirst();
-            scoreboardService.finishMatch(match);
+            Match match = scoreboardServiceImpl.getScoreboard().getMatches().getFirst();
+            scoreboardServiceImpl.finishMatch(match);
             assertThrows(IllegalStateException.class, () -> {
-                scoreboardService.updateScore(match, 1, 0);
+                scoreboardServiceImpl.updateScore(match, 1, 0);
             });
         }
 
         @Test
         @DisplayName("Update score with negative values")
         void negativeScores() {
-            Match match = scoreboardService.getScoreboard().getMatches().getFirst();
+            Match match = scoreboardServiceImpl.getScoreboard().getMatches().getFirst();
             assertThrows(IllegalArgumentException.class, () -> {
-                scoreboardService.updateScore(match, -1, 0);
+                scoreboardServiceImpl.updateScore(match, -1, 0);
             });
             assertThrows(IllegalArgumentException.class, () -> {
-                scoreboardService.updateScore(match, 1, -1);
+                scoreboardServiceImpl.updateScore(match, 1, -1);
             });
         }
 
         @Test
         @DisplayName("Update score with null values")
         void nullScores() {
-            Match match = scoreboardService.getScoreboard().getMatches().getFirst();
+            Match match = scoreboardServiceImpl.getScoreboard().getMatches().getFirst();
             assertThrows(IllegalArgumentException.class, () -> {
-                scoreboardService.updateScore(match, null, 0);
+                scoreboardServiceImpl.updateScore(match, null, 0);
             });
             assertThrows(IllegalArgumentException.class, () -> {
-                scoreboardService.updateScore(match, 1, null);
+                scoreboardServiceImpl.updateScore(match, 1, null);
             });
         }
 
@@ -155,7 +149,7 @@ class ScoreboardServiceTest {
         void matchNotInScoreboard() {
             Match match = new Match(new Team("Not in sb"), new Team("Not in scoreboard"));
             assertThrows(IllegalStateException.class, () -> {
-                scoreboardService.updateScore(match, 1, 0);
+                scoreboardServiceImpl.updateScore(match, 1, 0);
             });
         }
     }
@@ -166,38 +160,36 @@ class ScoreboardServiceTest {
 
         @BeforeEach
         void setUp() {
-            scoreboardService = new ScoreboardService();
-            var teams = List.of(new Team(TEAM_A), new Team(TEAM_B));
-            scoreboardService.getScoreboard().getTeams().addAll(teams);
-            scoreboardService.startNewMatch(TEAM_A, TEAM_B);
+            scoreboardServiceImpl = new ScoreboardServiceImpl();
+            scoreboardServiceImpl.startNewMatch(TEAM_A, TEAM_B);
         }
 
         @Test
         @DisplayName("Finish match with valid match")
         void validFinishMatch() {
-            Match match = scoreboardService.getScoreboard().getMatches().getFirst();
-            scoreboardService.finishMatch(match);
+            Match match = scoreboardServiceImpl.getScoreboard().getMatches().getFirst();
+            scoreboardServiceImpl.finishMatch(match);
             assertNotNull(match.getEndTime());
             assertFalse(match.getInProgress());
-            assertTrue(scoreboardService.getScoreboard().getMatches().isEmpty());
+            assertTrue(scoreboardServiceImpl.getScoreboard().getMatches().isEmpty());
         }
 
         @Test
         @DisplayName("Finish match with null match")
         void nullMatch() {
             assertThrows(IllegalArgumentException.class, () -> {
-                scoreboardService.finishMatch(null);
+                scoreboardServiceImpl.finishMatch(null);
             });
         }
 
         @Test
         @DisplayName("Finish match already finished")
         void matchAlreadyFinished() {
-            Match match = scoreboardService.getScoreboard().getMatches().getFirst();
-            scoreboardService.finishMatch(match);
+            Match match = scoreboardServiceImpl.getScoreboard().getMatches().getFirst();
+            scoreboardServiceImpl.finishMatch(match);
 
             assertThrows(IllegalStateException.class, () -> {
-                scoreboardService.finishMatch(match);
+                scoreboardServiceImpl.finishMatch(match);
             });
         }
 
@@ -206,7 +198,7 @@ class ScoreboardServiceTest {
         void matchNotInScoreboard() {
             Match match = new Match(new Team("Not in scoreboard"), new Team("Not in sb"));
             assertThrows(IllegalStateException.class, () -> {
-                scoreboardService.finishMatch(match);
+                scoreboardServiceImpl.finishMatch(match);
             });
         }
     }
@@ -217,25 +209,21 @@ class ScoreboardServiceTest {
 
         @BeforeEach
         void setUp() {
-            scoreboardService = new ScoreboardService();
-            var teams = List.of(new Team(TEAM_A), new Team(TEAM_B),
-                    new Team(TEAM_C), new Team(TEAM_D), new Team(TEAM_E),
-                    new Team(TEAM_F));
-            scoreboardService.getScoreboard().getTeams().addAll(teams);
+            scoreboardServiceImpl = new ScoreboardServiceImpl();
         }
 
         @Test
         @DisplayName("Get summary with no matches in progress")
         void noMatchesInProgress() {
-            String summary = scoreboardService.getSummary();
+            String summary = scoreboardServiceImpl.getSummary();
             assertEquals("", summary);
         }
 
         @Test
         @DisplayName("Get summary with a single match in progress")
         void singleMatchInProgress() {
-            scoreboardService.startNewMatch(TEAM_A, TEAM_B);
-            String summary = scoreboardService.getSummary();
+            scoreboardServiceImpl.startNewMatch(TEAM_A, TEAM_B);
+            String summary = scoreboardServiceImpl.getSummary();
             assertTrue(summary.contains(TEAM_A));
             assertTrue(summary.contains(TEAM_B));
         }
@@ -243,35 +231,32 @@ class ScoreboardServiceTest {
         @Test
         @DisplayName("Get summary with multiple matches with different scores")
         void multipleMatchesDifferentScores() {
-            scoreboardService.startNewMatch(TEAM_A, TEAM_B);
-            scoreboardService.startNewMatch(TEAM_C, TEAM_D);
-            scoreboardService.startNewMatch(TEAM_E, TEAM_F);
-            Match match1 = scoreboardService.getScoreboard().getMatches().get(0);
-            Match match2 = scoreboardService.getScoreboard().getMatches().get(1);
-            Match match3 = scoreboardService.getScoreboard().getMatches().get(2);
-            scoreboardService.updateScore(match1, 1, 0);
-            scoreboardService.updateScore(match2, 7, 4);
-            scoreboardService.updateScore(match3, 1, 2);
+            var match1 = scoreboardServiceImpl.startNewMatch(TEAM_A, TEAM_B);
+            var match2 = scoreboardServiceImpl.startNewMatch(TEAM_C, TEAM_D);
+            var match3 = scoreboardServiceImpl.startNewMatch(TEAM_E, TEAM_F);
 
-            String summary = scoreboardService.getSummary();
+            scoreboardServiceImpl.updateScore(match1, 1, 0);
+            scoreboardServiceImpl.updateScore(match2, 7, 4);
+            scoreboardServiceImpl.updateScore(match3, 1, 2);
+
+            String summary = scoreboardServiceImpl.getSummary();
             assertTrue(summary.indexOf(TEAM_C) < summary.indexOf(TEAM_E));
             assertTrue(summary.indexOf(TEAM_E) < summary.indexOf(TEAM_A));
         }
 
         @Test
         @DisplayName("Get summary with multiple matches where some have the same score")
-        void multipleMatchesSomeWithSameScore() {
-            scoreboardService.startNewMatch(TEAM_A, TEAM_B);
-            scoreboardService.startNewMatch(TEAM_C, TEAM_D);
-            scoreboardService.startNewMatch(TEAM_E, TEAM_F);
-            Match match1 = scoreboardService.getScoreboard().getMatches().get(0);
-            Match match2 = scoreboardService.getScoreboard().getMatches().get(1);
-            Match match3 = scoreboardService.getScoreboard().getMatches().get(2);
-            scoreboardService.updateScore(match1, 1, 1);
-            scoreboardService.updateScore(match2, 1, 1);
-            scoreboardService.updateScore(match3, 4, 0);
+        void multipleMatchesSomeWithSameScore() throws InterruptedException {
+            var match1 = scoreboardServiceImpl.startNewMatch(TEAM_A, TEAM_B);
+            var match2 = scoreboardServiceImpl.startNewMatch(TEAM_C, TEAM_D);
+            var match3 = scoreboardServiceImpl.startNewMatch(TEAM_E, TEAM_F);
 
-            String summary = scoreboardService.getSummary();
+            scoreboardServiceImpl.updateScore(match1, 1, 1);
+            Thread.sleep(100);
+            scoreboardServiceImpl.updateScore(match2, 1, 1);
+            scoreboardServiceImpl.updateScore(match3, 4, 0);
+
+            String summary = scoreboardServiceImpl.getSummary();
             assertTrue(summary.indexOf(TEAM_E) < summary.indexOf(TEAM_A));
             assertTrue(summary.indexOf(TEAM_A) < summary.indexOf(TEAM_C));
         }
@@ -279,10 +264,10 @@ class ScoreboardServiceTest {
         @Test
         @DisplayName("Get summary for example provided in task")
         void exampleFromTask() throws InterruptedException {
-            scoreboardService = new ScoreboardService();
-            setUpExampleTaskData(scoreboardService.getScoreboard());
+            scoreboardServiceImpl = new ScoreboardServiceImpl();
+            setUpExampleTaskData();
 
-            String summary = scoreboardService.getSummary();
+            String summary = scoreboardServiceImpl.getSummary();
             assertTrue(summary.indexOf("Argentina") < summary.indexOf("Germany"));
             assertTrue(summary.indexOf("Mexico") < summary.indexOf("Argentina"));
             assertTrue(summary.indexOf("Spain") < summary.indexOf("Mexico"));
@@ -290,29 +275,19 @@ class ScoreboardServiceTest {
 
         }
 
-        void setUpExampleTaskData(Scoreboard scoreboard) throws InterruptedException {
-            var teams = List.of(new Team("Mexico"), new Team("Canada"),
-                    new Team("Spain"), new Team("Brazil"), new Team("Germany"),
-                    new Team("France"), new Team("Uruguay"), new Team("Italy"),
-                    new Team("Argentina"), new Team("Australia"));
-            scoreboard.getTeams().addAll(teams);
-            scoreboardService.startNewMatch("Mexico", "Canada");
-            scoreboardService.startNewMatch("Spain", "Brazil");
+        void setUpExampleTaskData() throws InterruptedException {
+            var match1 = scoreboardServiceImpl.startNewMatch("Mexico", "Canada");
+            var match2 = scoreboardServiceImpl.startNewMatch("Spain", "Brazil");
             Thread.sleep(100);
-            scoreboardService.startNewMatch("Germany", "France");
-            scoreboardService.startNewMatch("Uruguay", "Italy");
+            var match3 = scoreboardServiceImpl.startNewMatch("Germany", "France");
+            var match4 = scoreboardServiceImpl.startNewMatch("Uruguay", "Italy");
             Thread.sleep(100);
-            scoreboardService.startNewMatch("Argentina", "Australia");
-            Match match1 = scoreboardService.getScoreboard().getMatches().get(0);
-            Match match2 = scoreboardService.getScoreboard().getMatches().get(1);
-            Match match3 = scoreboardService.getScoreboard().getMatches().get(2);
-            Match match4 = scoreboardService.getScoreboard().getMatches().get(3);
-            Match match5 = scoreboardService.getScoreboard().getMatches().get(4);
-            scoreboardService.updateScore(match1, 0, 5);
-            scoreboardService.updateScore(match2, 10, 2);
-            scoreboardService.updateScore(match3, 2, 2);
-            scoreboardService.updateScore(match4, 6, 6);
-            scoreboardService.updateScore(match5, 3, 1);
+            var match5 = scoreboardServiceImpl.startNewMatch("Argentina", "Australia");
+            scoreboardServiceImpl.updateScore(match1, 0, 5);
+            scoreboardServiceImpl.updateScore(match2, 10, 2);
+            scoreboardServiceImpl.updateScore(match3, 2, 2);
+            scoreboardServiceImpl.updateScore(match4, 6, 6);
+            scoreboardServiceImpl.updateScore(match5, 3, 1);
         }
     }
 

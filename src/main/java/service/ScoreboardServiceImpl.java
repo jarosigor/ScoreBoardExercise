@@ -8,15 +8,15 @@ import model.Scoreboard;
 import model.Team;
 
 @Getter
-public class ScoreboardService {
+public class ScoreboardServiceImpl implements ScoreBoardService {
 
     private final Scoreboard scoreboard;
 
-    public ScoreboardService() {
+    public ScoreboardServiceImpl() {
         scoreboard = new Scoreboard();
     }
 
-    public void startNewMatch(String homeTeamName, String awayTeamName) {
+    public Match startNewMatch(String homeTeamName, String awayTeamName) {
         var awayTeam = new Team(awayTeamName);
         var homeTeam = new Team(homeTeamName);
         var match = new Match(homeTeam, awayTeam);
@@ -27,6 +27,7 @@ public class ScoreboardService {
         if (ScoreBoardValidation.isMatchNotInTheScoreboard(match, scoreboard)) {
             scoreboard.getMatches().add(match);
         }
+        return match;
     }
 
     public void updateScore(Match match, Integer homeTeamScore, Integer awayTeamScore) {
@@ -51,6 +52,13 @@ public class ScoreboardService {
         StringBuilder summary = new StringBuilder();
         scoreboard.getMatches().forEach(match -> summary.append(match.toString()).append("\n"));
         return summary.toString();
+    }
+
+    public Match getMatch(String homeTeamName, String awayTeamName) {
+        return scoreboard.getMatches().stream()
+                .filter(match -> match.equals(new Match(new Team(homeTeamName), new Team(awayTeamName))))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Match not found"));
     }
 
     private void addNewTeams(Team homeTeam, Team awayTeam) {
