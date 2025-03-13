@@ -52,9 +52,7 @@ public class ScoreboardServiceImpl implements ScoreBoardService {
 
     public String getSummary() {
         Collections.sort(scoreboard.getMatches());
-        StringBuilder summary = new StringBuilder();
-        scoreboard.getMatches().forEach(match -> summary.append(match.toString()).append("\n"));
-        return summary.toString();
+        return scoreboard.toString();
     }
 
     public Match getMatch(String homeTeamName, String awayTeamName) {
