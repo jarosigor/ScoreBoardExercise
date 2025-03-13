@@ -246,6 +246,7 @@ class ScoreboardServiceTest {
             assertTrue(summary.indexOf(TEAM_E) < summary.indexOf(TEAM_A));
         }
 
+        // Test may fail sometimes due to starting new match (setting startTime) happening in the same millisecond
         @Test
         @DisplayName("Get summary with multiple matches where some have the same score")
         void multipleMatchesSomeWithSameScore() throws InterruptedException {
